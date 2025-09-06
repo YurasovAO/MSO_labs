@@ -14,7 +14,22 @@
 	  Определение домашней директории:/home/patt
 
 	4.Определение имён и соответствующих терминалов всех активных пользователей:
-	  cat <(who -H | grep -o 'NAME\s\+LINE') <(who | grep -o '\w\+\s\+tty[0-9]\+') | awk '{print t bash}'
+	  cat <(who -H | grep -o 'NAME\s\+LINE') <(who | grep -o '\w\+\s\+tty[0-9]\+') | awk '{print "\t  " $0}'
 	  Результат:
 	  NAME     LINE
 	  patt     tty2
+
+	5.Определение номеров всех доступных для Вашего наблюдения активных процессов:
+	  ps | awk '{print "\t  "$0}'
+	  Результат:
+	      PID TTY          TIME CMD
+	     7069 pts/0    00:00:01 bash
+	    24168 pts/0    00:00:00 bash
+	    24169 pts/0    00:00:00 ps
+	    24170 pts/0    00:00:00 awk
+
+	6.Определение параметров терминала:
+	  stty | awk '{print "\t  "$0}'
+	  Результат:
+	  speed 38400 baud; line = 0;
+	  -brkint -imaxbel iutf8
