@@ -1,5 +1,4 @@
 #!/bin/sh
-
 $(date --date="today" +%T >> first.snap)
 $(echo "===================================================" >> first.snap)
 $(who | grep "$($whoami)" | grep -o "tty[0-9]\s" >> first.snap)
