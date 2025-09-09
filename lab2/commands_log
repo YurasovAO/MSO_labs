@@ -124,10 +124,12 @@ MYOWNNAME, TIMEZONE, MYGROUP, DAY_OF_WEEK_TODAY, а также измените 
     #!/bin/sh
 
     MOUNTH=09
-    HOUR_OF_DAY=14
-    MINUTE_OF_DAY=44
+    HOUR_OF_DAY=12
+    MINUTE_OF_DAY=32
 
-    #То есть вывод сообщения должен происходить 8 сентября в 14:41
+    #То есть вывод сообщения должен происходить 8 сентября в 13:35
+
+    $(rm -rf comms.res)
 
 
     while true
@@ -138,10 +140,9 @@ MYOWNNAME, TIMEZONE, MYGROUP, DAY_OF_WEEK_TODAY, а также измените 
         CURRENT_MINUTE_OF_DAY=$(date --date="today" +%M)
         CURRENT_TIMEZONE=$(date --date="today" +%Z)
 
-
-        if [ $CURRENT_MOUNTH -eq $MOUNTH ] && [ $CURRENT_DAY_OF_WEEK_TODAY -eq $DAY_OF_WEEK_TODAY ] && [ $CURRENT_HOUR_OF_DAY -eq $HOUR_OF_DAY ] && [ $CURRENT_MINUTE_OF_DAY -eq $MINUTE_OF_DAY ] && [ $CURRENT_TIMEZONE = $TIMEZONE ]
+        if [ $CURRENT_MOUNTH -eq  $MOUNTH ] && [ $CURRENT_DAY_OF_WEEK_TODAY -eq  $DAY_OF_WEEK_TODAY ] && [ $CURRENT_HOUR_OF_DAY -eq  $HOUR_OF_DAY ] && [ $CURRENT_MINUTE_OF_DAY -eq $MINUTE_OF_DAY ] && [ $CURRENT_TIMEZONE = $TIMEZONE ]
         then
-            echo "It's 14:00 September the eigth"
+            echo "It's 14:00 September the eigth" | tee -a comms.res
             sleep 10
         fi
     done
@@ -149,20 +150,49 @@ MYOWNNAME, TIMEZONE, MYGROUP, DAY_OF_WEEK_TODAY, а также измените 
     Сам скрипт находится в файле part8.sh
 
     Запуск в фоновом режиме происходит с помощью следующей команды:
-    ./part8.sh &
+    ./part8.sh & disown
 
 9) Напишите скрипт, который проверял бы наличие процесса, связанного со скриптом по
 пункту номер 8) и останавливал бы его, если количество сообщений, выведенных на экран
 скриптом по пункту номер 8) превысит некоторое число. Уточнение задания - см. табл.4.2.
 
 
-ps ax | grep -E ".*\sS+\s.*part8.*
+    Ниже приведён скрипт shell, выполняющий данные действия.
+
+    #!/bin/sh
+
+    SKRIPT_NAME="part8"
+    PID=0
+
+    if [ $(ps ax | grep -E ".*( sudo nohup )?$SKRIPT_NAME" | wc -l) -ge 2 ]
+    then
+        echo "process found"
+        #PID=$(ps ax | grep -E ".*( sudo nohup )?$SKRIPT_NAME" | head -n 1 | awk '{print $1}')
+        PID=$(ps ax | grep -E ".*[0-9]\s/bin/sh\s./$SKRIPT_NAME" | head -n 1 | awk '{print $1}')
+        echo "$PID"
+    else
+        echo "process not found"
+        exit
+    fi
 
 
+    while true
+    do
+        if [ $(( $(cat comms.res 2>/dev/null | wc -l) % $DIGIT_FOR_LAB )) -eq 0 ] && [ -f ./comms.res ]
+        then
+            echo "Обнаружено превышение, остановка вывода"
+            $(kill $PID)
+            exit
+        fi
+    done
+
+    Сам скрипт находится в файле part9.sh
+
+    Запуск в фоновом режиме происходит с помощью следующей команды:
+    ./part9.sh & disown
 
 
-
-
+        Примечание:скрипты 8 и 9 следует запускать последовательно
 
 
 10) Напишите скрипт без использования диалога с оператором на языке shell, который через
