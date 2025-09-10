@@ -203,11 +203,63 @@ MYOWNNAME, TIMEZONE, MYGROUP, DAY_OF_WEEK_TODAY, а также измените 
 позаботились в начале лабораторного задания; это "кое-что" позволит Вам выполнить
 задание.
 
+    Номер бригады нечётный - используем конструкцию for
+    Ниже приведён код скрипта,выполняющий данные дейсвтия.Сам код содержится
+    в файле скрипта part10.sh
+
+    #!/bin/sh
+    SKRIPT_NAME="part"
+    TIME_INIT=$(shuf -i 5-10 -n 1)
+    START_TIME=$(date --date='today' +%M)
+    END_TIME=$(date --date='today' +%M)
+
+
+    $(rm -rf PID.s)
+
+    $(ps ax | grep -E ".*[0-9]\s/bin/sh\s./part" | head -n 3 | awk '{print $1}' >> PID.s)
+
+
+    while [ $(( END_TIME - START_TIME )) -ne $TIME_INIT ]
+    do
+        END_TIME=$(date --date='today' +%M)
+        sleep 1
+
+    done
+
+
+    while read line
+    do
+
+        $(kill $line)
+
+    done < PID.s
+
+    $(rm -rf PID.s)
+
+
+
 
 11) После запуска скрипта п.10 вернитесь в оболочку shell которая была в Вашем
 распоряжении до выполнения п.6).
 
+        Для возврата терминла к состоянию до пункта 6 требуется удалить переменные, записанные в файл ~/.bashrc, а также
+        выполнить команду source ~/.bashrc
 
 
 12) Завершите сеанс работы с ОС через минуту запуска некоторого скрипта.
 
+    Код скрипта,выполняющий данный пункт приведён ниже и содержится в файле part12.sh
+
+
+    #!/bin/sh
+    START_TIME=$(date --date='today' +%M)
+    END_TIME=$(date --date='today' +%M)
+
+    while true
+    do
+        END_TIME=$(date --date='today' +%M)
+        if [ $(( $END_TIME - $START_TIME )) -eq 1 ]
+        then
+            $(shutdown -P now)
+        fi
+    done

@@ -6,7 +6,6 @@ PID=0
 if [ $(ps ax | grep -E ".*( sudo nohup )?$SKRIPT_NAME" | wc -l) -ge 2 ]
 then
     echo "process found"
-    #PID=$(ps ax | grep -E ".*( sudo nohup )?$SKRIPT_NAME" | head -n 1 | awk '{print $1}')
     PID=$(ps ax | grep -E ".*[0-9]\s/bin/sh\s./$SKRIPT_NAME" | head -n 1 | awk '{print $1}')
     echo "$PID"
 else
