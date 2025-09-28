@@ -1,0 +1,13 @@
+Листинг каталога:
+    ls -la  $HOME/..
+Результат:
+    total 12
+    drwxr-xr-x  3 root root 4096 янв 30  2025 .
+    drwxr-xr-x 20 root root 4096 сен  6 14:20 ..
+    drwxr-x--- 36 patt patt 4096 сен  6 14:23 patt
+
+Имя каталога:
+    cd $HOME/.. && pwd
+
+Результат:
+    /home
